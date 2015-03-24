@@ -223,6 +223,11 @@ class Job(BackendDocument):
 					if country == acc.storeCountry:
 						return True
 				return False
+                if 'minimumOSVersion' in self.jobInfo:
+                        minimumOSVersion = int(self.jobInfo['minimumOSVersion'])
+                        productVersion = int(''.join(device['deviceInfo']['ProductVersion'].split('.')))
+                        if  productVersion < minimumOSVersion:
+                                return False
 		return True
 
 
