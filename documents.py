@@ -160,7 +160,8 @@ class Job(BackendDocument):
 			#TODO accountId, bundleId, storeCountry, appType{AppStoreApp,CydiaApp}, executionStrategy{DefaultExecution,OpenCloseExecution,RandomExecution,SmartExecution}
 		'worker': Worker,
 		'device': Device,
-		'date_added': float
+		'date_added': float,
+                'error_message': unicode
 	}
 	required_fields = ['type', 'state', 'jobInfo']
 	default_values = {
