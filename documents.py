@@ -161,12 +161,15 @@ class Job(BackendDocument):
 		'worker': Worker,
 		'device': Device,
 		'date_added': float,
-                'error_message': unicode
+                'error_message': unicode,
+                'compatible_devices': int
 	}
 	required_fields = ['type', 'state', 'jobInfo']
 	default_values = {
 		'date_added': time.time,
-		'state': STATE.UNDEFINED
+		'state': STATE.UNDEFINED,
+                # 100 for ipad, 10 for iPhone and 1 for iPod
+                'compatible_devices': 0b111
 	}
 	indexes = [{
 		'fields':['type', 'state'],
@@ -229,7 +232,19 @@ class Job(BackendDocument):
                         productVersion = int(''.join(device['deviceInfo']['ProductVersion'].split('.')))
                         if  productVersion < minimumOSVersion:
                                 return False
-		return True
+
+                deviceClass = device['deviceInfo']['DeviceClass']
+                if deviceClass == 'iPad':
+                        deviceClassValue = 0b100
+                elif deviceClass == 'iPhone':
+                        deviceClassValue = 0b10
+                else:
+                        deviceClassValue = 0b1
+                        
+                if not self.compatible_devices & deviceClassValue:
+                        return False
+                else:
+                        return True
 
 
 # A app is a concrete app (user account, version, bundleID) under test
